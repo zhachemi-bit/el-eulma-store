@@ -190,6 +190,16 @@ async function main() {
     },
   });
 
+  // Simple static admin for easy access
+  await prisma.user.create({
+    data: {
+      email: 'admin@admin.com',
+      name: 'Main Admin',
+      password: await bcrypt.hash('password123', 10),
+      role: 'admin',
+    },
+  });
+
   for (let i = 0; i < createdVendors.length; i++) {
       const vendor = createdVendors[i];
       await prisma.user.create({
