@@ -1,0 +1,131 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String        @id @default(cuid())
+  email        String        @unique
+  password     String
+  name         String
+  phone        String?
+  role         String        @default("user")
+  avatar       String?
+  vendorId     String?       @unique
+  resetToken    String?
+  resetTokenExpiry DateTime?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  addresses    Address[]
+  orders       Order[]
+  reviews      Review[]
+  testimonials Testimonial[]
+  vendor       Vendor?       @relation(fields: [vendorId], references: [id])
+}
+
+model Vendor {
+  id                 String    @id @default(cuid())
+  name               String
+  email              String    @unique
+  phone              String?
+  location           String?
+  wilaya             String?
+  rating             Float     @default(0)
+  verified           Boolean   @default(false)
+  status             String    @default("pending")
+  productCount       Int       @default(0)
+  registrationNumber String?
+  description        String?
+  logo               String?
+  latitude           Float?
+  longitude          Float?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  products           Product[]
+  user               User?
+}
+
+model Product {
+  id             String      @id @default(cuid())
+  name           String
+  description    String?
+  price          Float
+  originalPrice  Float?
+  images         String      @default("[]")
+  category       String
+  subcategory    String?
+  vendorId       String
+  stock          Int         @default(0)
+  rating         Float       @default(0)
+  reviewCount    Int         @default(0)
+  specifications String      @default("{}")
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  orderItems     OrderItem[]
+  vendor         Vendor      @relation(fields: [vendorId], references: [id])
+  reviews        Review[]
+}
+
+model Order {
+  id                String      @id @default(cuid())
+  userId            String
+  total             Float
+  status            String      @default("pending")
+  shippingAddressId String
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  shippingAddress   Address     @relation(fields: [shippingAddressId], references: [id])
+  user              User        @relation(fields: [userId], references: [id])
+  items             OrderItem[]
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  productId String
+  quantity  Int
+  price     Float
+  product   Product @relation(fields: [productId], references: [id])
+  order     Order   @relation(fields: [orderId], references: [id])
+}
+
+model Address {
+  id         String  @id @default(cuid())
+  userId     String
+  fullName   String
+  phone      String
+  wilaya     String
+  city       String
+  address    String
+  postalCode String?
+  user       User    @relation(fields: [userId], references: [id])
+  orders     Order[]
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  rating    Int
+  comment   String?
+  productId String
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Testimonial {
+  id        String   @id @default(cuid())
+  name      String
+  location  String
+  quote     String
+  rating    Int
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+}
