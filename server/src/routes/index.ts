@@ -9,10 +9,30 @@ import { prisma } from '../prisma.js';
 
 const router = Router();
 
+/**
+ * @swagger
+ * /health:
+ *   get:
+ *     summary: Health check
+ *     tags: [System]
+ *     responses:
+ *       200:
+ *         description: Server is online
+ */
 router.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date() });
 });
 
+/**
+ * @swagger
+ * /stats:
+ *   get:
+ *     summary: Public platform statistics
+ *     tags: [System]
+ *     responses:
+ *       200:
+ *         description: Counts for products, vendors, and delivery coverage
+ */
 router.get('/stats', async (_req, res) => {
   try {
     const products = await prisma.product.count();

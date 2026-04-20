@@ -2,6 +2,23 @@ import type { Request, Response } from 'express';
 import { prisma } from '../prisma.js';
 import type { AuthRequest } from '../types.js';
 
+/**
+ * @swagger
+ * tags:
+ *   name: Testimonials
+ *   description: Customer feedback and stories
+ */
+
+/**
+ * @swagger
+ * /testimonials:
+ *   get:
+ *     summary: List customer testimonials
+ *     tags: [Testimonials]
+ *     responses:
+ *       200:
+ *         description: Success
+ */
 export const getTestimonials = async (req: Request, res: Response) => {
   try {
     const testimonials = await prisma.testimonial.findMany({
@@ -15,6 +32,30 @@ export const getTestimonials = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * @swagger
+ * /testimonials:
+ *   post:
+ *     summary: Submit a new testimonial
+ *     tags: [Testimonials]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [name, location, quote, rating]
+ *             properties:
+ *               name: { type: string }
+ *               location: { type: string }
+ *               quote: { type: string }
+ *               rating: { type: integer, minimum: 1, maximum: 5 }
+ *     responses:
+ *       201:
+ *         description: Created
+ */
 export const createTestimonial = async (req: AuthRequest, res: Response) => {
   try {
     const userId = req.user!.id;

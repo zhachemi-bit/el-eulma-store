@@ -19,7 +19,41 @@ const sanitizeUser = (user: any) => {
   return safe;
 };
 
-// POST /api/users/signup
+/**
+ * @swagger
+ * tags:
+ *   name: Users
+ *   description: User management and authentication
+ */
+
+/**
+ * @swagger
+ * /users/signup:
+ *   post:
+ *     summary: Registers a new user or vendor
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [email, password, name, role]
+ *             properties:
+ *               email: { type: string, example: user@example.com }
+ *               password: { type: string, example: secret123 }
+ *               name: { type: string, example: John Doe }
+ *               role: { type: string, enum: [user, vendor], default: user }
+ *               phone: { type: string }
+ *               businessName: { type: string }
+ *               wilaya: { type: string }
+ *               registrationNumber: { type: string }
+ *     responses:
+ *       201:
+ *         description: Registered successfully
+ *       400:
+ *         description: Bad request
+ */
 export const signup = async (req: Request, res: Response) => {
   try {
     const { 
@@ -103,7 +137,29 @@ export const signup = async (req: Request, res: Response) => {
   }
 };
 
-// POST /api/users/login
+/**
+ * @swagger
+ * /users/login:
+ *   post:
+ *     summary: Authenticate user/vendor/admin
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [email, password, role]
+ *             properties:
+ *               email: { type: string, example: admin@eleulmastore.dz }
+ *               password: { type: string, example: admin123 }
+ *               role: { type: string, enum: [user, vendor, admin], default: user }
+ *     responses:
+ *       200:
+ *         description: Login successful
+ *       401:
+ *         description: Invalid credentials
+ */
 export const login = async (req: Request, res: Response) => {
   try {
     const { email, password, role } = req.body;
@@ -149,7 +205,20 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
-// GET /api/users/me
+/**
+ * @swagger
+ * /users/me:
+ *   get:
+ *     summary: Get current authenticated user details
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Success
+ *       401:
+ *         description: Unauthorized
+ */
 export const getMe = async (req: AuthRequest, res: Response) => {
   try {
     const user = await prisma.user.findUnique({
@@ -167,7 +236,23 @@ export const getMe = async (req: AuthRequest, res: Response) => {
   }
 };
 
-// GET /api/users/:userId/addresses
+/**
+ * @swagger
+ * /users/:userId/addresses:
+ *   get:
+ *     summary: Get all shipping addresses for a user
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema: { type: string }
+ *     responses:
+ *       200:
+ *         description: Success
+ */
 export const getUserAddresses = async (req: AuthRequest, res: Response) => {
   try {
     // Only allow users to access their own addresses (unless admin)
@@ -186,7 +271,33 @@ export const getUserAddresses = async (req: AuthRequest, res: Response) => {
   }
 };
 
-// POST /api/users/addresses
+/**
+ * @swagger
+ * /users/addresses:
+ *   post:
+ *     summary: Create a new shipping address
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [userId, fullName, phone, wilaya, city, address]
+ *             properties:
+ *               userId: { type: string }
+ *               fullName: { type: string }
+ *               phone: { type: string }
+ *               wilaya: { type: string }
+ *               city: { type: string }
+ *               address: { type: string }
+ *               postalCode: { type: string }
+ *     responses:
+ *       201:
+ *         description: Created
+ */
 export const createAddress = async (req: AuthRequest, res: Response) => {
   try {
     const { userId, fullName, phone, wilaya, city, address, postalCode } = req.body;
@@ -207,7 +318,23 @@ export const createAddress = async (req: AuthRequest, res: Response) => {
   }
 };
 
-// DELETE /api/users/addresses/:id
+/**
+ * @swagger
+ * /users/addresses/{id}:
+ *   delete:
+ *     summary: Delete a shipping address
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *     responses:
+ *       200:
+ *         description: Deleted
+ */
 export const deleteAddress = async (req: AuthRequest, res: Response) => {
   try {
     const address = await prisma.address.findUnique({ where: { id: req.params['id'] as string } });
@@ -228,7 +355,29 @@ export const deleteAddress = async (req: AuthRequest, res: Response) => {
   }
 };
 
-// PUT /api/users/me
+/**
+ * @swagger
+ * /users/me:
+ *   put:
+ *     summary: Update user profile or password
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name: { type: string }
+ *               phone: { type: string }
+ *               avatar: { type: string }
+ *               currentPassword: { type: string }
+ *               newPassword: { type: string }
+ *     responses:
+ *       200:
+ *         description: Updated
+ */
 export const updateProfile = async (req: AuthRequest, res: Response) => {
   try {
     const { name, phone, avatar, currentPassword, newPassword } = req.body;
@@ -267,7 +416,25 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
   }
 };
 
-// POST /api/users/forgot-password
+/**
+ * @swagger
+ * /users/forgot-password:
+ *   post:
+ *     summary: Request a password reset key
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [email]
+ *             properties:
+ *               email: { type: string }
+ *     responses:
+ *       200:
+ *         description: Email sent
+ */
 export const forgotPassword = async (req: Request, res: Response) => {
   try {
     const { email } = req.body;
@@ -302,7 +469,28 @@ export const forgotPassword = async (req: Request, res: Response) => {
   }
 };
 
-// POST /api/users/verify-reset-key
+/**
+ * @swagger
+ * /users/verify-reset-key:
+ *   post:
+ *     summary: Verify a password reset key
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [email, key]
+ *             properties:
+ *               email: { type: string }
+ *               key: { type: string }
+ *     responses:
+ *       200:
+ *         description: Valid key
+ *       400:
+ *         description: Invalid or expired key
+ */
 export const verifyResetKey = async (req: Request, res: Response) => {
   try {
     const { email, key } = req.body;
@@ -323,7 +511,27 @@ export const verifyResetKey = async (req: Request, res: Response) => {
   }
 };
 
-// POST /api/users/reset-password
+/**
+ * @swagger
+ * /users/reset-password:
+ *   post:
+ *     summary: Reset password using a valid key
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [email, key, newPassword]
+ *             properties:
+ *               email: { type: string }
+ *               key: { type: string }
+ *               newPassword: { type: string }
+ *     responses:
+ *       200:
+ *         description: Password reset successful
+ */
 export const resetPassword = async (req: Request, res: Response) => {
   try {
     const { email, key, newPassword } = req.body;

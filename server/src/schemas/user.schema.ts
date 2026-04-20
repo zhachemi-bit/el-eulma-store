@@ -1,5 +1,8 @@
 import { z } from 'zod';
 
+/**
+ * @description Validation schema for user and vendor registration.
+ */
 export const signupSchema = z.object({
   email: z.string().email('Invalid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
@@ -15,12 +18,18 @@ export const signupSchema = z.object({
   longitude: z.number().optional(),
 });
 
+/**
+ * @description Validation schema for user authentication.
+ */
 export const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
   password: z.string().min(1, 'Password is required'),
   role: z.enum(['user', 'vendor', 'admin']),
 });
 
+/**
+ * @description Validation schema for creating/updating shipping addresses.
+ */
 export const addressSchema = z.object({
   userId: z.string().min(1, 'User ID is required'),
   fullName: z.string().min(2, 'Full name is required'),
@@ -31,6 +40,9 @@ export const addressSchema = z.object({
   postalCode: z.string().optional(),
 });
 
+/**
+ * @description Validation schema for updating user profile details.
+ */
 export const updateProfileSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters').optional(),
   phone: z.string().optional(),

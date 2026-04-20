@@ -2,7 +2,44 @@ import type { Response } from 'express';
 import { prisma } from '../prisma.js';
 import type { AuthRequest } from '../types.js';
 
-// POST /api/orders
+/**
+ * @swagger
+ * tags:
+ *   name: Orders
+ *   description: Customer order management
+ */
+
+/**
+ * @swagger
+ * /orders:
+ *   post:
+ *     summary: Place a new order
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [userId, items, total, shippingAddressId]
+ *             properties:
+ *               userId: { type: string }
+ *               total: { type: number }
+ *               shippingAddressId: { type: string }
+ *               items:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     productId: { type: string }
+ *                     quantity: { type: integer }
+ *                     price: { type: number }
+ *     responses:
+ *       201:
+ *         description: Created
+ */
 export const createOrder = async (req: AuthRequest, res: Response) => {
   try {
     const { userId, items, total, shippingAddressId } = req.body;
@@ -64,7 +101,23 @@ export const createOrder = async (req: AuthRequest, res: Response) => {
   }
 };
 
-// GET /api/orders/user/:userId
+/**
+ * @swagger
+ * /orders/user/{userId}:
+ *   get:
+ *     summary: Get all orders for a user
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema: { type: string }
+ *     responses:
+ *       200:
+ *         description: Success
+ */
 export const getOrdersByUser = async (req: AuthRequest, res: Response) => {
   try {
     if (req.user!.id !== req.params['userId'] as string && req.user!.role !== 'admin') {
@@ -87,7 +140,25 @@ export const getOrdersByUser = async (req: AuthRequest, res: Response) => {
   }
 };
 
-// GET /api/orders/:id
+/**
+ * @swagger
+ * /orders/{id}:
+ *   get:
+ *     summary: Get order details by ID
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *     responses:
+ *       200:
+ *         description: Success
+ *       404:
+ *         description: Order not found
+ */
 export const getOrderById = async (req: AuthRequest, res: Response) => {
   try {
     const order = await prisma.order.findUnique({
@@ -115,7 +186,25 @@ export const getOrderById = async (req: AuthRequest, res: Response) => {
   }
 };
 
-// PATCH /api/orders/:id/cancel
+/**
+ * @swagger
+ * /orders/{id}/cancel:
+ *   patch:
+ *     summary: Cancel a pending order
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *     responses:
+ *       200:
+ *         description: Cancelled
+ *       400:
+ *         description: Cannot cancel (already shipped/delivered)
+ */
 export const cancelOrder = async (req: AuthRequest, res: Response) => {
   try {
     const order = await prisma.order.findUnique({ where: { id: req.params['id'] as string as string } });

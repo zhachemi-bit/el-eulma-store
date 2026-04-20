@@ -2,15 +2,58 @@ import type { Request, Response } from 'express';
 import { prisma } from '../prisma.js';
 import type { AuthRequest } from '../types.js';
 
-// Parse JSON fields stored as strings in SQLite
-const transformProduct = (product: any) => ({
-  ...product,
-  images: JSON.parse(product.images || '[]'),
-  specifications: JSON.parse(product.specifications || '{}'),
-  image: JSON.parse(product.images || '[]')[0] || '',
-});
+// Parse JSON fields stored as strings
+const transformProduct = (product: any) => {
+  const safeParse = (val: any, fallback: any) => {
+    if (typeof val !== 'string') return val || fallback;
+    try {
+      return JSON.parse(val || 'null') || fallback;
+    } catch (e) {
+      return fallback;
+    }
+  };
 
-// GET /api/products
+  const images = safeParse(product.images, []);
+  const specifications = safeParse(product.specifications, {});
+
+  return {
+    ...product,
+    images,
+    specifications,
+    image: images[0] || '',
+  };
+};
+
+/**
+ * @swagger
+ * tags:
+ *   name: Products
+ *   description: Product catalog management
+ */
+
+/**
+ * @swagger
+ * /products:
+ *   get:
+ *     summary: List all products with filtering and pagination
+ *     tags: [Products]
+ *     parameters:
+ *       - in: query
+ *         name: category
+ *         schema: { type: string }
+ *       - in: query
+ *         name: search
+ *         schema: { type: string }
+ *       - in: query
+ *         name: page
+ *         schema: { type: integer, default: 1 }
+ *       - in: query
+ *         name: limit
+ *         schema: { type: integer, default: 20 }
+ *     responses:
+ *       200:
+ *         description: Success
+ */
 export const getProducts = async (req: Request, res: Response) => {
   try {
     const { category, search, limit, page = '1', vendorId } = req.query;
@@ -55,7 +98,23 @@ export const getProducts = async (req: Request, res: Response) => {
   }
 };
 
-// GET /api/products/:id
+/**
+ * @swagger
+ * /products/{id}:
+ *   get:
+ *     summary: Get a single product by ID
+ *     tags: [Products]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *     responses:
+ *       200:
+ *         description: Success
+ *       404:
+ *         description: Product not found
+ */
 export const getProductById = async (req: Request, res: Response) => {
   try {
     const product = await prisma.product.findUnique({
@@ -84,7 +143,37 @@ export const getProductById = async (req: Request, res: Response) => {
   }
 };
 
-// POST /api/products  (vendor only)
+/**
+ * @swagger
+ * /products:
+ *   post:
+ *     summary: Create a new product (Vendors only)
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [name, price, category]
+ *             properties:
+ *               name: { type: string }
+ *               description: { type: string }
+ *               price: { type: number }
+ *               originalPrice: { type: number }
+ *               images: { type: array, items: { type: string } }
+ *               category: { type: string }
+ *               subcategory: { type: string }
+ *               stock: { type: integer }
+ *               specifications: { type: object }
+ *     responses:
+ *       201:
+ *         description: Created
+ *       403:
+ *         description: Forbidden (Not a vendor)
+ */
 export const createProduct = async (req: AuthRequest, res: Response) => {
   try {
     const vendorId = req.user!.vendorId;
@@ -124,7 +213,40 @@ export const createProduct = async (req: AuthRequest, res: Response) => {
   }
 };
 
-// PUT /api/products/:id  (vendor only - own products)
+/**
+ * @swagger
+ * /products/{id}:
+ *   put:
+ *     summary: Update an existing product
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name: { type: string }
+ *               description: { type: string }
+ *               price: { type: number }
+ *               originalPrice: { type: number }
+ *               images: { type: array, items: { type: string } }
+ *               category: { type: string }
+ *               subcategory: { type: string }
+ *               stock: { type: integer }
+ *               specifications: { type: object }
+ *     responses:
+ *       200:
+ *         description: Updated
+ *       403:
+ *         description: Forbidden (Not owner or admin)
+ */
 export const updateProduct = async (req: AuthRequest, res: Response) => {
   try {
     const product = await prisma.product.findUnique({ where: { id: req.params['id'] as string } });
@@ -163,7 +285,25 @@ export const updateProduct = async (req: AuthRequest, res: Response) => {
   }
 };
 
-// DELETE /api/products/:id  (vendor only - own products)
+/**
+ * @swagger
+ * /products/{id}:
+ *   delete:
+ *     summary: Delete a product
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *     responses:
+ *       200:
+ *         description: Deleted
+ *       403:
+ *         description: Forbidden
+ */
 export const deleteProduct = async (req: AuthRequest, res: Response) => {
   try {
     const product = await prisma.product.findUnique({ where: { id: req.params['id'] as string } });
@@ -191,7 +331,33 @@ export const deleteProduct = async (req: AuthRequest, res: Response) => {
   }
 };
 
-// POST /api/products/:id/reviews (authenticated)
+/**
+ * @swagger
+ * /products/{id}/reviews:
+ *   post:
+ *     summary: Create a product review
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [rating]
+ *             properties:
+ *               rating: { type: integer, minimum: 1, maximum: 5 }
+ *               comment: { type: string }
+ *     responses:
+ *       201:
+ *         description: Review created
+ */
 export const createReview = async (req: AuthRequest, res: Response) => {
   try {
     const productId = req.params['id'] as string;

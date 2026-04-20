@@ -2,7 +2,27 @@ import type { Request, Response } from 'express';
 import { prisma } from '../prisma.js';
 import type { AuthRequest } from '../types.js';
 
-// GET /api/vendors
+/**
+ * @swagger
+ * tags:
+ *   name: Vendors
+ *   description: Vendor directory and profile management
+ */
+
+/**
+ * @swagger
+ * /vendors:
+ *   get:
+ *     summary: List all approved vendors
+ *     tags: [Vendors]
+ *     parameters:
+ *       - in: query
+ *         name: search
+ *         schema: { type: string }
+ *     responses:
+ *       200:
+ *         description: Success
+ */
 export const getVendors = async (req: Request, res: Response) => {
   try {
     const { status = 'approved', search } = req.query;
@@ -24,7 +44,23 @@ export const getVendors = async (req: Request, res: Response) => {
   }
 };
 
-// GET /api/vendors/:id
+/**
+ * @swagger
+ * /vendors/{id}:
+ *   get:
+ *     summary: Get vendor profile by ID
+ *     tags: [Vendors]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *     responses:
+ *       200:
+ *         description: Success
+ *       404:
+ *         description: Vendor not found
+ */
 export const getVendorById = async (req: Request, res: Response) => {
   try {
     const vendor = await prisma.vendor.findUnique({
@@ -58,7 +94,18 @@ export const getVendorById = async (req: Request, res: Response) => {
   }
 };
 
-// GET /api/vendors/me  (vendor sees their own profile)
+/**
+ * @swagger
+ * /vendors/me/profile:
+ *   get:
+ *     summary: Get my vendor profile (Vendors only)
+ *     tags: [Vendors]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Success
+ */
 export const getMyVendorProfile = async (req: AuthRequest, res: Response) => {
   try {
     if (!req.user!.vendorId) {
@@ -81,7 +128,30 @@ export const getMyVendorProfile = async (req: AuthRequest, res: Response) => {
   }
 };
 
-// PUT /api/vendors/me  (vendor updates their own profile)
+/**
+ * @swagger
+ * /vendors/me/profile:
+ *   put:
+ *     summary: Update my vendor profile (Vendors only)
+ *     tags: [Vendors]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name: { type: string }
+ *               phone: { type: string }
+ *               location: { type: string }
+ *               wilaya: { type: string }
+ *               description: { type: string }
+ *               logo: { type: string }
+ *     responses:
+ *       200:
+ *         description: Updated
+ */
 export const updateMyVendorProfile = async (req: AuthRequest, res: Response) => {
   try {
     if (!req.user!.vendorId) {
@@ -109,7 +179,18 @@ export const updateMyVendorProfile = async (req: AuthRequest, res: Response) => 
   }
 };
 
-// GET /api/vendors/me/stats  (vendor dashboard stats)
+/**
+ * @swagger
+ * /vendors/me/stats:
+ *   get:
+ *     summary: Get my dashboard stats (Vendors only)
+ *     tags: [Vendors]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Success
+ */
 export const getVendorStats = async (req: AuthRequest, res: Response) => {
   try {
     if (!req.user!.vendorId) {

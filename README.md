@@ -37,6 +37,10 @@ Server runs at: http://localhost:3000
 
 ## API Endpoints
 
+> [!TIP]
+> For a more detailed guide including request/response examples and full schemas, please refer to the [Detailed API Documentation](./API_DOCUMENTATION.md).
+
+
 ### Auth (Public)
 | Method | Endpoint              | Description        |
 |--------|-----------------------|--------------------|

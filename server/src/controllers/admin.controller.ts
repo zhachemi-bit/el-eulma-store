@@ -2,7 +2,25 @@ import type { Response } from 'express';
 import { prisma } from '../prisma.js';
 import type { AuthRequest } from '../types.js';
 
-// GET /api/admin/stats
+/**
+ * @swagger
+ * tags:
+ *   name: Admin
+ *   description: System-wide administration and management
+ */
+
+/**
+ * @swagger
+ * /admin/stats:
+ *   get:
+ *     summary: Get global system statistics (Admin only)
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Success
+ */
 export const getStats = async (_req: AuthRequest, res: Response) => {
   try {
     const [totalUsers, totalVendors, totalProducts, totalOrders, pendingVendors, revenue] = await Promise.all([
@@ -41,7 +59,28 @@ export const getStats = async (_req: AuthRequest, res: Response) => {
   }
 };
 
-// GET /api/admin/users
+/**
+ * @swagger
+ * /admin/users:
+ *   get:
+ *     summary: Get all users with filtering (Admin only)
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: role
+ *         schema: { type: string }
+ *       - in: query
+ *         name: search
+ *         schema: { type: string }
+ *       - in: query
+ *         name: page
+ *         schema: { type: integer, default: 1 }
+ *     responses:
+ *       200:
+ *         description: Success
+ */
 export const getAllUsers = async (req: AuthRequest, res: Response) => {
   try {
     const { role, search, page = '1' } = req.query;
@@ -73,7 +112,25 @@ export const getAllUsers = async (req: AuthRequest, res: Response) => {
   }
 };
 
-// GET /api/admin/orders
+/**
+ * @swagger
+ * /admin/orders:
+ *   get:
+ *     summary: Get all orders in the system (Admin only)
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: status
+ *         schema: { type: string }
+ *       - in: query
+ *         name: page
+ *         schema: { type: integer, default: 1 }
+ *     responses:
+ *       200:
+ *         description: Success
+ */
 export const getAllOrders = async (req: AuthRequest, res: Response) => {
   try {
     const { status, page = '1' } = req.query;
@@ -106,7 +163,32 @@ export const getAllOrders = async (req: AuthRequest, res: Response) => {
   }
 };
 
-// PATCH /api/admin/orders/:id/status
+/**
+ * @swagger
+ * /admin/orders/{id}/status:
+ *   patch:
+ *     summary: Update any order status (Admin only)
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [status]
+ *             properties:
+ *               status: { type: string, enum: [pending, confirmed, shipped, delivered, cancelled] }
+ *     responses:
+ *       200:
+ *         description: Status updated
+ */
 export const updateOrderStatus = async (req: AuthRequest, res: Response) => {
   try {
     const { status } = req.body;
@@ -129,7 +211,25 @@ export const updateOrderStatus = async (req: AuthRequest, res: Response) => {
   }
 };
 
-// GET /api/admin/vendors
+/**
+ * @swagger
+ * /admin/vendors:
+ *   get:
+ *     summary: Get all vendors/applications (Admin only)
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: status
+ *         schema: { type: string }
+ *       - in: query
+ *         name: search
+ *         schema: { type: string }
+ *     responses:
+ *       200:
+ *         description: Success
+ */
 export const getAllVendors = async (req: AuthRequest, res: Response) => {
   try {
     const { status, search } = req.query;
@@ -160,7 +260,23 @@ export const getAllVendors = async (req: AuthRequest, res: Response) => {
   }
 };
 
-// PATCH /api/admin/vendors/:id/approve
+/**
+ * @swagger
+ * /admin/vendors/{id}/approve:
+ *   patch:
+ *     summary: Approve a vendor application (Admin only)
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *     responses:
+ *       200:
+ *         description: Approved
+ */
 export const approveVendor = async (req: AuthRequest, res: Response) => {
   try {
     const vendor = await prisma.vendor.findUnique({ where: { id: req.params['id'] as string } });
@@ -180,7 +296,23 @@ export const approveVendor = async (req: AuthRequest, res: Response) => {
   }
 };
 
-// PATCH /api/admin/vendors/:id/reject
+/**
+ * @swagger
+ * /admin/vendors/{id}/reject:
+ *   patch:
+ *     summary: Reject a vendor application (Admin only)
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *     responses:
+ *       200:
+ *         description: Rejected
+ */
 export const rejectVendor = async (req: AuthRequest, res: Response) => {
   try {
     const vendor = await prisma.vendor.findUnique({ where: { id: req.params['id'] as string } });
@@ -200,7 +332,23 @@ export const rejectVendor = async (req: AuthRequest, res: Response) => {
   }
 };
 
-// DELETE /api/admin/users/:id
+/**
+ * @swagger
+ * /admin/users/{id}:
+ *   delete:
+ *     summary: Delete any user account (Admin only)
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *     responses:
+ *       200:
+ *         description: Deleted
+ */
 export const deleteUser = async (req: AuthRequest, res: Response) => {
   try {
     const user = await prisma.user.findUnique({ where: { id: req.params['id'] as string as string } });
