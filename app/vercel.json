@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "https://your-backend-name.onrender.com/api/$1"
+      "destination": "https://el-eulma-store.onrender.com/api/$1"
     },
     {
       "source": "/(.*)",
