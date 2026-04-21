@@ -11,6 +11,15 @@ const getHeaders = () => {
   };
 };
 
+const safeJson = async (response: Response) => {
+  const contentType = response.headers.get('content-type');
+  if (contentType && contentType.includes('application/json')) {
+    return response.json();
+  }
+  const text = await response.text();
+  throw new Error(`Expected JSON but received: ${text.slice(0, 100)}${text.length > 100 ? '...' : ''}`);
+};
+
 export const api = {
   // Stats
   getPublicStats: async (): Promise<{ products: number; vendors: number; wilayas: number }> => {
@@ -30,10 +39,10 @@ export const api = {
       body: JSON.stringify(data),
     });
     if (!response.ok) {
-      const error = await response.json();
+      const error = await safeJson(response).catch(() => ({ error: 'Signup failed (HTML response)' }));
       throw new Error(error.error || 'Signup failed');
     }
-    return response.json();
+    return safeJson(response);
   },
 
   login: async (credentials: LoginCredentials): Promise<{ user: User; token: string }> => {
@@ -43,10 +52,10 @@ export const api = {
       body: JSON.stringify(credentials),
     });
     if (!response.ok) {
-      const error = await response.json();
+      const error = await safeJson(response).catch(() => ({ error: 'Login failed (HTML response)' }));
       throw new Error(error.error || 'Login failed');
     }
-    return response.json();
+    return safeJson(response);
   },
 
   forgotPassword: async (email: string): Promise<{ message: string; debug_key?: string }> => {

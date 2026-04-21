@@ -74,7 +74,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true);
     try {
       const { user: adminUser, token } = await api.login({
-        email: 'admin@eleulmastore.dz',
+        email: 'admin@admin.com',
         password,
         role: 'admin'
       });

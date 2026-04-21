@@ -29,7 +29,7 @@ Server runs at: https://el-eulma-store.vercel.app/
 ## Test Accounts
 | Role     | Email                        | Password   |
 |----------|------------------------------|------------|
-| Admin    | admin@eleulmastore.dz        | admin123   |
+| Admin    | admin@admin.com              | admin123   |
 | Customer | customer@example.com         | user123    |
 | Vendor   | vendor@electroplus.dz        | vendor123  |
 

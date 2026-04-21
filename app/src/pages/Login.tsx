@@ -193,16 +193,32 @@ export function Login() {
           </Card>
         </motion.div>
 
-        {/* Demo Credentials */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
-          className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg"
+          className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg flex flex-col gap-2"
         >
-          <p className="text-sm text-amber-800 font-medium mb-2">Demo Credentials:</p>
-          <p className="text-xs text-amber-700">
-            {isVendor ? 'vendor@electroplus.dz / vendor123' : 'customer@example.com / user123'}
+          <div className="flex items-center gap-2 text-amber-800 font-medium text-sm">
+            <Lock className="w-4 h-4" />
+            <span>Default Test Accounts:</span>
+          </div>
+          <div className="grid grid-cols-1 gap-2">
+            <div className="p-2 bg-white/50 rounded border border-amber-100">
+              <p className="text-[10px] uppercase tracking-wider text-amber-600 font-bold mb-0.5">Admin</p>
+              <p className="text-xs text-amber-900 font-mono">admin@admin.com / admin123</p>
+            </div>
+            <div className="p-2 bg-white/50 rounded border border-amber-100">
+              <p className="text-[10px] uppercase tracking-wider text-green-600 font-bold mb-0.5">Seller (Vendor)</p>
+              <p className="text-xs text-amber-900 font-mono">vendor@electroplus.dz / vendor123</p>
+            </div>
+            <div className="p-2 bg-white/50 rounded border border-amber-100">
+              <p className="text-[10px] uppercase tracking-wider text-blue-600 font-bold mb-0.5">Customer (User)</p>
+              <p className="text-xs text-amber-900 font-mono">customer@example.com / user123</p>
+            </div>
+          </div>
+          <p className="text-[10px] text-amber-500 italic mt-1 text-center">
+            Note: These are for development and testing purposes.
           </p>
         </motion.div>
       </div>

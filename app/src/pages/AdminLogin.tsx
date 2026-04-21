@@ -159,16 +159,21 @@ export function AdminLogin() {
           </Card>
         </motion.div>
 
-        {/* Security Footer */}
+        {/* Security Footer & Credentials */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
-          className="mt-6 text-center"
+          className="mt-6 flex flex-col items-center gap-4"
         >
           <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
             <Lock className="w-4 h-4" />
             <span>Secure encrypted connection</span>
+          </div>
+
+          <div className="w-full max-w-[280px] p-3 bg-purple-50 border border-purple-100 rounded-lg text-center">
+            <p className="text-[10px] uppercase tracking-wider text-purple-600 font-bold mb-1">Development Admin Password</p>
+            <p className="text-sm text-purple-900 font-mono font-bold">admin123</p>
           </div>
         </motion.div>
       </div>

@@ -15,7 +15,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "https://el-eulma-store.onrender.com",
+        target: "http://localhost:3000",
         changeOrigin: true
       }
     }
