@@ -22,7 +22,7 @@ npm run db:seed
 npm run dev
 ```
 
-Server runs at: http://localhost:3000
+Server runs at: https://el-eulma-store.vercel.app/
 
 ---
 
