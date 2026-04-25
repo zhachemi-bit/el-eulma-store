@@ -93,7 +93,12 @@
     "price_range": "نطاق السعر",
     "sort": "الترتيب",
     "in_stock": "متوفر في المخزن",
-    "out_of_stock": "محجوز/غير متوفر"
+    "out_of_stock": "محجوز/غير متوفر",
+    "min_order": "الحد الأدنى للطلب: {{count}} قطعة",
+    "liquidation_badge": "تصفية نهائية",
+    "added_to_cart": "تمت إضافة {{name}} إلى السلة!",
+    "view_cart": "عرض السلة",
+    "signin_favorites": "يرجى تسجيل الدخول لحفظ المنتجات في المفضلة"
   },
   "filter": {
     "min": "الأدنى",

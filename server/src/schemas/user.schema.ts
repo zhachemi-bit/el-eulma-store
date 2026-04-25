@@ -22,7 +22,7 @@ export const signupSchema = z.object({
  * @description Validation schema for user authentication.
  */
 export const loginSchema = z.object({
-  email: z.string().email('Invalid email address'),
+  email: z.string().min(1, 'Email or Username is required'),
   password: z.string().min(1, 'Password is required'),
   role: z.enum(['user', 'vendor', 'admin']),
 });

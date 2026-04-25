@@ -22,7 +22,7 @@ export function SignUp() {
   const { role } = useParams<{ role: 'user' | 'vendor' }>();
   const navigate = useNavigate();
   const { signup, isAuthenticated } = useAuth();
-  
+
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -34,7 +34,7 @@ export function SignUp() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  
+
   // Common fields
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -42,7 +42,7 @@ export function SignUp() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [avatar, setAvatar] = useState<string | null>(null);
-  
+
   // Vendor-specific fields
   const [businessName, setBusinessName] = useState('');
   const [businessAddress, setBusinessAddress] = useState('');
@@ -76,7 +76,7 @@ export function SignUp() {
 
   const isVendor = role === 'vendor';
   const title = isVendor ? 'Create Vendor Account' : 'Create Customer Account';
-  const description = isVendor 
+  const description = isVendor
     ? 'Start selling your products on El Eulma Store'
     : 'Shop for the best products at wholesale prices';
   const loginLink = isVendor ? '/login/vendor' : '/login/user';
@@ -110,7 +110,7 @@ export function SignUp() {
     if (!isVendor && !validateStep1()) return;
 
     setIsLoading(true);
-    
+
     try {
       await signup({
         name,
@@ -130,11 +130,11 @@ export function SignUp() {
       });
 
       toast.success('Account created successfully!', {
-        description: isVendor 
+        description: isVendor
           ? 'Your vendor account is pending verification. You will be notified once approved.'
           : 'Welcome to El Eulma Store!',
       });
-      
+
       if (isVendor) {
         navigate('/login/vendor');
       } else {
@@ -167,15 +167,15 @@ export function SignUp() {
           className="mb-6"
         >
           {step === 1 ? (
-            <Link 
-              to="/login" 
+            <Link
+              to="/login"
               className="inline-flex items-center text-[#5d6d7e] hover:text-[#27ae60] transition-colors"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to login options
             </Link>
           ) : (
-            <button 
+            <button
               onClick={() => setStep(1)}
               className="inline-flex items-center text-[#5d6d7e] hover:text-[#27ae60] transition-colors"
             >
@@ -202,19 +202,17 @@ export function SignUp() {
               </div>
               <CardTitle className="text-2xl">{title}</CardTitle>
               <CardDescription>{description}</CardDescription>
-              
+
               {/* Step Indicator for Vendor */}
               {isVendor && (
                 <div className="flex items-center justify-center gap-2 mt-4">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                    step === 1 ? 'bg-[#27ae60] text-white' : 'bg-green-100 text-[#27ae60]'
-                  }`}>
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${step === 1 ? 'bg-[#27ae60] text-white' : 'bg-green-100 text-[#27ae60]'
+                    }`}>
                     {step > 1 ? <CheckCircle className="w-5 h-5" /> : '1'}
                   </div>
                   <div className={`w-16 h-1 rounded ${step > 1 ? 'bg-[#27ae60]' : 'bg-gray-200'}`} />
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                    step === 2 ? 'bg-[#27ae60] text-white' : 'bg-gray-200 text-gray-500'
-                  }`}>
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${step === 2 ? 'bg-[#27ae60] text-white' : 'bg-gray-200 text-gray-500'
+                    }`}>
                     2
                   </div>
                 </div>
@@ -340,7 +338,7 @@ export function SignUp() {
                     </div>
                   </div>
 
-                  <Button 
+                  <Button
                     onClick={handleNext}
                     className={`w-full h-12 mt-2 ${isVendor ? 'bg-[#27ae60] hover:bg-[#229954]' : 'bg-blue-600 hover:bg-blue-700'}`}
                     disabled={isLoading}
@@ -411,11 +409,11 @@ export function SignUp() {
                         )}
                         {latitude ? 'Location Detected' : 'Detect My Location'}
                       </Button>
-                      
+
                       {latitude && (
-                         <Badge variant="outline" className="h-12 px-4 flex items-center justify-center bg-white border-2 border-green-200">
-                           {latitude.toFixed(4)}, {longitude?.toFixed(4)}
-                         </Badge>
+                        <Badge variant="outline" className="h-12 px-4 flex items-center justify-center bg-white border-2 border-green-200">
+                          {latitude.toFixed(4)}, {longitude?.toFixed(4)}
+                        </Badge>
                       )}
                     </div>
                     {!latitude && <p className="text-[10px] text-[#5d6d7e]">This helps customers find your store more easily.</p>}
@@ -449,7 +447,7 @@ export function SignUp() {
                     </div>
                   </div>
 
-                  <Button 
+                  <Button
                     onClick={handleSubmit}
                     className="w-full h-12 bg-[#27ae60] hover:bg-[#229954]"
                     disabled={isLoading}
@@ -477,9 +475,9 @@ export function SignUp() {
               </div>
 
               {/* Login Link */}
-              <Button 
+              <Button
                 asChild
-                variant="outline" 
+                variant="outline"
                 className="w-full h-12 bg-transparent hover:bg-green-50 text-[#27ae60] border-[#27ae60]"
               >
                 <Link to={loginLink}>

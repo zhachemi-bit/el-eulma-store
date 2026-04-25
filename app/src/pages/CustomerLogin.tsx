@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Shield, Lock, Mail, Eye, EyeOff, Loader2, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Mail, Lock, Eye, EyeOff, User, Loader2 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,26 +9,26 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { toast } from 'sonner';
 
-export function AdminLogin() {
+export function CustomerLogin() {
   const navigate = useNavigate();
-  const { login, isAuthenticated, user } = useAuth();
+  const { login, isAuthenticated } = useAuth();
 
-  const [email, setEmail] = useState('admin@admin.com');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (isAuthenticated && user?.role === 'admin') {
-      navigate('/admin');
+    if (isAuthenticated) {
+      navigate('/');
     }
-  }, [isAuthenticated, user, navigate]);
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!email || !password) {
-      toast.error('Please enter all credentials');
+      toast.error('Please fill in all fields');
       return;
     }
 
@@ -38,23 +38,23 @@ export function AdminLogin() {
       await login({
         email,
         password,
-        role: 'admin',
+        role: 'user',
       });
-      toast.success('Welcome, Administrator!', {
-        description: 'Access granted to admin dashboard.',
+
+      toast.success('Welcome back!', {
+        description: 'Logged in as Customer',
       });
-      navigate('/admin');
+
+      navigate('/');
     } catch (error: any) {
-      toast.error('Access denied', {
-        description: error.toString() || 'Invalid credentials.',
-      });
+      toast.error(error.toString());
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-gray-100 pt-20 pb-20">
+    <main className="min-h-screen bg-gradient-to-br from-[#f8f9fa] via-white to-blue-50 pt-20 pb-20">
       <div className="max-w-md mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -63,7 +63,7 @@ export function AdminLogin() {
         >
           <Link
             to="/login"
-            className="inline-flex items-center text-[#5d6d7e] hover:text-purple-600 transition-colors"
+            className="inline-flex items-center text-[#5d6d7e] hover:text-blue-600 transition-colors"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to selection
@@ -75,57 +75,43 @@ export function AdminLogin() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
         >
-          <Card className="shadow-2xl border-purple-200">
+          <Card className="shadow-lg border-blue-100">
             <CardHeader className="text-center pb-6">
-              <div className="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Shield className="w-8 h-8 text-purple-600" />
+              <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <User className="w-8 h-8 text-blue-600" />
               </div>
-              <CardTitle className="text-2xl">Administrator Access</CardTitle>
-              <CardDescription>
-                Restricted area - Authorized personnel only
-              </CardDescription>
+              <CardTitle className="text-2xl">Customer Login</CardTitle>
+              <CardDescription>Sign in to shop and track your orders</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="flex items-start gap-3 p-4 bg-amber-50 border border-amber-200 rounded-lg mb-6">
-                <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-                <div className="text-sm text-amber-800">
-                  <p className="font-medium">Security Protocol</p>
-                  <p>Unauthorized access attempts are monitored and logged.</p>
-                </div>
-              </div>
-
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="identifier" className="text-purple-700 font-medium">
-                    Email or Username
-                  </Label>
+                  <Label htmlFor="identifier">Email or Username</Label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-400" />
-                    <Input
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <input
                       id="identifier"
                       type="text"
-                      placeholder="admin@admin.com or AdminName"
+                      placeholder="customer@example.com or Username"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="pl-10 h-12 border-purple-200 focus:border-purple-500 focus:ring-purple-500"
+                      className="w-full pl-10 h-12 rounded-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       disabled={isLoading}
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="password" title="password" className="text-purple-700 font-medium">
-                    Password
-                  </Label>
+                  <Label htmlFor="password">Password</Label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-400" />
-                    <Input
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <input
                       id="password"
                       type={showPassword ? 'text' : 'password'}
-                      placeholder="••••••••"
+                      placeholder="Enter your password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="pl-10 pr-10 h-12 border-purple-200 focus:border-purple-500 focus:ring-purple-500"
+                      className="w-full pl-10 pr-10 h-12 rounded-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       disabled={isLoading}
                     />
                     <button
@@ -138,24 +124,46 @@ export function AdminLogin() {
                   </div>
                 </div>
 
+                <div className="text-right">
+                  <Link to="/forgot-password" title="customer" className="text-sm text-blue-600 hover:underline">
+                    Forgot password?
+                  </Link>
+                </div>
+
                 <Button
                   type="submit"
-                  className="w-full h-12 bg-purple-600 hover:bg-purple-700 mt-2"
+                  className="w-full h-12 bg-blue-600 hover:bg-blue-700"
                   disabled={isLoading}
                 >
                   {isLoading ? (
                     <>
                       <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                      Authenticating...
+                      Signing in...
                     </>
                   ) : (
-                    <>
-                      <Shield className="w-5 h-5 mr-2" />
-                      Access Admin Panel
-                    </>
+                    'Sign In'
                   )}
                 </Button>
               </form>
+
+              <div className="relative my-6">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-200" />
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-2 bg-white text-[#5d6d7e]">Don't have an account?</span>
+                </div>
+              </div>
+
+              <Button
+                asChild
+                variant="outline"
+                className="w-full h-12 bg-transparent hover:bg-blue-50 text-blue-600 border-blue-600"
+              >
+                <Link to="/signup/user">
+                  Create Account
+                </Link>
+              </Button>
             </CardContent>
           </Card>
         </motion.div>
@@ -164,13 +172,13 @@ export function AdminLogin() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
-          className="mt-6 flex flex-col items-center gap-4"
+          className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg"
         >
-          <div className="w-full max-w-[280px] p-4 bg-purple-50 border border-purple-100 rounded-xl text-center shadow-sm">
-            <p className="text-[10px] uppercase tracking-wider text-purple-600 font-bold mb-1">Admin Credentials</p>
-            <p className="text-sm text-purple-900 font-mono font-bold">admin@admin.com</p>
-            <p className="text-sm text-purple-900 font-mono font-bold">admin123</p>
+          <div className="flex items-center gap-2 text-blue-800 font-medium text-sm mb-2">
+            <Lock className="w-4 h-4" />
+            <span>Customer Test Account:</span>
           </div>
+          <p className="text-xs text-blue-900 font-mono">customer@example.com / user123</p>
         </motion.div>
       </div>
     </main>

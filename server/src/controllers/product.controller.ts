@@ -182,7 +182,7 @@ export const createProduct = async (req: AuthRequest, res: Response) => {
       return res.status(403).json({ error: 'No vendor profile linked to your account.' });
     }
 
-    const { name, description, price, originalPrice, images, category, subcategory, stock, specifications } = req.body;
+    const { name, description, price, originalPrice, images, category, subcategory, stock, specifications, minOrderQuantity } = req.body;
 
     const product = await prisma.product.create({
       data: {
@@ -195,6 +195,7 @@ export const createProduct = async (req: AuthRequest, res: Response) => {
         subcategory,
         stock: stock || 0,
         specifications: JSON.stringify(specifications || {}),
+        minOrderQuantity: parseInt(minOrderQuantity as any) || 1,
         vendorId,
       },
       include: { vendor: true },
@@ -260,7 +261,7 @@ export const updateProduct = async (req: AuthRequest, res: Response) => {
       return res.status(403).json({ error: 'You can only update your own products.' });
     }
 
-    const { name, description, price, originalPrice, images, category, subcategory, stock, specifications } = req.body;
+    const { name, description, price, originalPrice, images, category, subcategory, stock, specifications, minOrderQuantity } = req.body;
 
     const updated = await prisma.product.update({
       where: { id: req.params['id'] as string as string },
@@ -274,6 +275,7 @@ export const updateProduct = async (req: AuthRequest, res: Response) => {
         ...(subcategory !== undefined && { subcategory }),
         ...(stock !== undefined && { stock }),
         ...(specifications && { specifications: JSON.stringify(specifications) }),
+        ...(minOrderQuantity !== undefined && { minOrderQuantity: parseInt(minOrderQuantity as any) }),
       },
       include: { vendor: true },
     });

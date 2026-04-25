@@ -46,8 +46,10 @@ export function RoleSelection() {
   const handleRoleSelect = (roleId: string) => {
     if (roleId === 'admin') {
       navigate('/login/admin');
+    } else if (roleId === 'vendor') {
+      navigate('/login/vendor');
     } else {
-      navigate(`/login/${roleId}`);
+      navigate('/login/customer');
     }
   };
 

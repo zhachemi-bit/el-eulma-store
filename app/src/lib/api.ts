@@ -31,6 +31,12 @@ export const api = {
     return response.json();
   },
 
+  getCategoryStats: async (): Promise<Record<string, number>> => {
+    const response = await fetch(`${API_BASE}/stats/categories`);
+    if (!response.ok) return {};
+    return response.json();
+  },
+
   // Auth
   signup: async (data: SignUpData): Promise<{ user: User; token: string }> => {
     const response = await fetch(`${API_BASE}/users/signup`, {
@@ -188,6 +194,23 @@ export const api = {
       const error = await response.json();
       throw new Error(error.error || 'Failed to submit testimonial');
     }
+    return response.json();
+  },
+
+  deleteTestimonial: async (id: string): Promise<void> => {
+    const response = await fetch(`${API_BASE}/testimonials/${id}`, {
+      method: 'DELETE',
+      headers: getHeaders(),
+    });
+    if (!response.ok) throw new Error('Failed to delete testimonial');
+  },
+
+  togglePinTestimonial: async (id: string): Promise<Testimonial> => {
+    const response = await fetch(`${API_BASE}/testimonials/${id}/pin`, {
+      method: 'PATCH',
+      headers: getHeaders(),
+    });
+    if (!response.ok) throw new Error('Failed to toggle pin');
     return response.json();
   },
 

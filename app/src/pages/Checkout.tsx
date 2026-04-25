@@ -384,24 +384,34 @@ export function Checkout() {
                         </div>
                       </div>
 
-                      <div className="bg-gradient-to-br from-[#27ae60] to-[#229954] rounded-xl p-6 mb-6 text-white">
-                        <div className="flex justify-between items-start mb-8">
-                          <div className="w-12 h-8 bg-yellow-400/30 rounded" />
-                          <div className="text-right">
-                            <p className="text-xs opacity-80">Dahabia</p>
+                      <div className="relative rounded-xl overflow-hidden mb-6 aspect-[1.586/1] shadow-2xl group border border-blue-200">
+                        {/* Background Image */}
+                        <img 
+                          src="/dahabia-card.png" 
+                          alt="Dahabia Card" 
+                          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        />
+                        
+                        {/* Overlay with details */}
+                        <div className="absolute inset-0 p-8 flex flex-col justify-end text-white">
+                          <div className="mb-8">
+                            <p className="text-2xl sm:text-3xl font-mono tracking-[0.2em] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] text-center">
+                              {paymentData.cardNumber || '#### #### #### ####'}
+                            </p>
                           </div>
-                        </div>
-                        <p className="text-2xl font-mono tracking-wider mb-4">
-                          {paymentData.cardNumber || '#### #### #### ####'}
-                        </p>
-                        <div className="flex justify-between">
-                          <div>
-                            <p className="text-xs opacity-70">Card Holder</p>
-                            <p className="font-medium">{paymentData.cardHolder || 'YOUR NAME'}</p>
-                          </div>
-                          <div>
-                            <p className="text-xs opacity-70">Expires</p>
-                            <p className="font-medium">{paymentData.expiryDate || 'MM/YY'}</p>
+                          <div className="flex justify-between items-end">
+                            <div className="flex-1 mr-4">
+                              <p className="text-[10px] uppercase font-bold tracking-wider opacity-90 mb-1 drop-shadow-md">Card Holder</p>
+                              <p className="font-bold text-lg tracking-widest uppercase drop-shadow-[0_2px_3px_rgba(0,0,0,0.8)] truncate">
+                                {paymentData.cardHolder || 'YOUR NAME'}
+                              </p>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-[10px] uppercase font-bold tracking-wider opacity-90 mb-1 drop-shadow-md">Expires</p>
+                              <p className="font-bold text-lg tracking-widest drop-shadow-[0_2px_3px_rgba(0,0,0,0.8)]">
+                                {paymentData.expiryDate || 'MM/YY'}
+                              </p>
+                            </div>
                           </div>
                         </div>
                       </div>

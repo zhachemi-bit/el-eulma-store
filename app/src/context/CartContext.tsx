@@ -43,9 +43,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       return;
     }
     setItems(prev =>
-      prev.map(item =>
-        item.id === id ? { ...item, quantity } : item
-      )
+      prev.map(item => {
+        if (item.id === id) {
+          // Ensure quantity is at least minOrderQuantity
+          const finalQuantity = Math.max(quantity, item.minOrderQuantity || 1);
+          return { ...item, quantity: finalQuantity };
+        }
+        return item;
+      })
     );
   }, [removeItem]);
 

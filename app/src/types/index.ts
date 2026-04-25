@@ -14,6 +14,7 @@ export interface Product {
   rating: number;
   reviewCount: number;
   specifications?: Record<string, string>;
+  minOrderQuantity: number;
   createdAt: Date;
   updatedAt: Date;
   reviews?: Review[];
@@ -79,6 +80,7 @@ export interface CartItem {
   quantity: number;
   image: string;
   vendorName: string;
+  minOrderQuantity: number;
 }
 
 export interface Category {

@@ -39,9 +39,10 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
       id: product.id,
       name: product.name,
       price: product.price,
-      quantity: 1,
+      quantity: product.minOrderQuantity || 1,
       image: product.image,
       vendorName: product.vendor.name,
+      minOrderQuantity: product.minOrderQuantity || 1,
     });
 
     toast.success(`${product.name} added to cart!`, {
@@ -109,8 +110,8 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
             {/* Badges */}
             <div className="absolute top-3 left-3 flex flex-col gap-2">
               {discount > 0 && (
-                <Badge className="bg-[#e67e22] text-white border-0">
-                  -{discount}%
+                <Badge className="bg-red-600 text-white font-black border-0 animate-pulse">
+                  {t('products.liquidation_badge')} -{discount}%
                 </Badge>
               )}
               {product.stock < 10 && product.stock > 0 && (
@@ -248,8 +249,14 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                 ))}
               </div>
               <span className="text-xs text-[#5d6d7e]">
-                {product.rating > 0 && <span className="font-semibold text-gray-700 mr-1">{Number(product.rating).toFixed(1)}</span>}
-                ({product.reviewCount})
+                {product.rating > 0 ? (
+                  <>
+                    <span className="font-semibold text-gray-700 mr-1">{Number(product.rating).toFixed(1)}</span>
+                    ({product.reviewCount})
+                  </>
+                ) : (
+                  <span>New</span>
+                )}
               </span>
             </div>
 
@@ -265,14 +272,20 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
               )}
             </div>
 
-            {/* Stock Status */}
-            <div className="mt-2">
+            <div className="mt-3 flex flex-col gap-1.5">
               {product.stock > 0 ? (
-                <Badge variant="outline" className="text-xs text-[#27ae60] border-[#27ae60]/30 bg-[#27ae60]/5">
-                  In Stock ({product.stock} left)
-                </Badge>
+                <div className="flex items-center justify-between">
+                  <Badge variant="outline" className="text-[10px] text-[#27ae60] border-[#27ae60]/30 bg-[#27ae60]/5 px-2 py-0">
+                    In Stock ({product.stock})
+                  </Badge>
+                  {product.minOrderQuantity > 1 && (
+                    <span className="text-[10px] font-bold text-[#e67e22]">
+                      Min: {product.minOrderQuantity}
+                    </span>
+                  )}
+                </div>
               ) : (
-                <Badge variant="outline" className="text-xs text-red-500 border-red-200 bg-red-50">
+                <Badge variant="outline" className="text-[10px] text-red-500 border-red-200 bg-red-50 px-2 py-0">
                   Out of Stock
                 </Badge>
               )}

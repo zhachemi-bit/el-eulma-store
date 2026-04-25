@@ -1,10 +1,22 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { categories } from '@/data/categories';
 import { useTranslation } from 'react-i18next';
+import { api } from '@/lib/api';
 
 export function Categories() {
   const { t } = useTranslation();
+  const [counts, setCounts] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    const fetchCounts = async () => {
+      const data = await api.getCategoryStats();
+      setCounts(data);
+    };
+    fetchCounts();
+  }, []);
+
   return (
     <section id="categories" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -62,7 +74,7 @@ export function Categories() {
                         {category.description}
                       </p>
                       <p className="text-[#27ae60] text-xs mt-2 font-medium">
-                        {category.productCount} products
+                        {counts[category.id] || 0} products
                       </p>
                     </motion.div>
                   </div>

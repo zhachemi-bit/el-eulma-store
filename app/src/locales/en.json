@@ -93,7 +93,12 @@
     "price_range": "Price Interval",
     "sort": "Sequence",
     "in_stock": "Available Stock",
-    "out_of_stock": "Reserved/Unavailable"
+    "out_of_stock": "Reserved/Unavailable",
+    "min_order": "Min order: {{count}} pieces",
+    "liquidation_badge": "LIQUIDATION",
+    "added_to_cart": "{{name}} added to cart!",
+    "view_cart": "View Cart",
+    "signin_favorites": "Please sign in to save favorites"
   },
   "filter": {
     "min": "Minimum",

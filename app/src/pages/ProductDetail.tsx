@@ -53,6 +53,8 @@ export function ProductDetail() {
       try {
         const data = await api.getProductById(id);
         setProduct(data);
+        // Set initial quantity to minOrderQuantity
+        setQuantity(data.minOrderQuantity || 1);
       } catch (error) {
         console.error('Failed to fetch product:', error);
       } finally {
@@ -94,12 +96,12 @@ export function ProductDetail() {
       quantity,
       image: product.image,
       vendorName: product.vendor.name,
+      minOrderQuantity: product.minOrderQuantity,
     });
     
-    toast.success(`${product.name} added to cart!`, {
-      description: 'Click to view your cart',
+    toast.success(t('products.added_to_cart', { name: product.name }), {
       action: {
-        label: 'View Cart',
+        label: t('products.view_cart'),
         onClick: () => setIsOpen(true),
       },
     });
@@ -212,8 +214,14 @@ export function ProductDetail() {
                 ))}
               </div>
               <span className="text-sm text-[#5d6d7e]">
-                {product.rating > 0 && <span className="font-semibold text-gray-700 mr-1">{Number(product.rating).toFixed(1)}</span>}
-                ({product.reviewCount} reviews)
+                {product.rating > 0 ? (
+                  <>
+                    <span className="font-semibold text-gray-700 mr-1">{Number(product.rating).toFixed(1)}</span>
+                    ({product.reviewCount} reviews)
+                  </>
+                ) : (
+                  <span>No reviews yet</span>
+                )}
               </span>
             </div>
 
@@ -245,24 +253,30 @@ export function ProductDetail() {
               )}
             </div>
 
-            {/* Quantity */}
-            <div className="flex items-center gap-4 mb-6">
-              <span className="text-sm font-medium text-[#2c3e50]">Quantity:</span>
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="w-10 h-10 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-100 transition-colors"
-                >
-                  <Minus className="w-4 h-4" />
-                </button>
-                <span className="w-12 text-center font-medium">{quantity}</span>
-                <button
-                  onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
-                  className="w-10 h-10 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-100 transition-colors"
-                >
-                  <Plus className="w-4 h-4" />
-                </button>
+            <div className="flex flex-col gap-2 mb-6">
+              <div className="flex items-center gap-4">
+                <span className="text-sm font-medium text-[#2c3e50]">Quantity:</span>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => setQuantity(Math.max(product.minOrderQuantity || 1, quantity - 1))}
+                    className="w-10 h-10 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-100 transition-colors"
+                  >
+                    <Minus className="w-4 h-4" />
+                  </button>
+                  <span className="w-12 text-center font-medium">{quantity}</span>
+                  <button
+                    onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
+                    className="w-10 h-10 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-100 transition-colors"
+                  >
+                    <Plus className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
+              {product.minOrderQuantity > 1 && (
+                <p className="text-xs text-[#e67e22] font-medium">
+                  {t('products.min_order', { count: product.minOrderQuantity })}
+                </p>
+              )}
             </div>
 
             {/* Actions */}
@@ -280,7 +294,7 @@ export function ProductDetail() {
                 variant="outline"
                 onClick={() => {
                   if (!isAuthenticated) {
-                    toast.error('Please sign in to save favorites');
+                    toast.error(t('products.signin_favorites'));
                     return;
                   }
                   if (product) {

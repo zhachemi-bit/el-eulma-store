@@ -17,7 +17,8 @@ import {
   Mail,
   Phone,
   ExternalLink,
-  User as UserIcon
+  User as UserIcon,
+  Lock
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
@@ -295,6 +296,7 @@ export function AdminDashboard() {
                                     <span className="bg-gray-100 px-2 py-1 rounded">{app.phone}</span>
                                     <span className="bg-gray-100 px-2 py-1 rounded">{getWilayaName(app.wilaya)}</span>
                                     <span className="bg-gray-100 px-2 py-1 rounded">RC: {app.registrationNumber}</span>
+                                    <span className="bg-orange-50 text-orange-700 font-mono px-2 py-1 rounded">Pass: vendor123</span>
                                   </div>
                                 </div>
                               </div>
@@ -383,6 +385,10 @@ export function AdminDashboard() {
                                   <p className="text-sm text-[#5d6d7e] flex items-center gap-1">
                                     <UserIcon className="w-3 h-3" />
                                     Account: {vendor.user?.name || 'Linked Owner'}
+                                  </p>
+                                  <p className="text-xs text-[#e67e22] font-mono mt-0.5">
+                                    <Lock className="w-3 h-3 inline mr-1" />
+                                    Password: vendor123
                                   </p>
                                 </div>
                               </div>

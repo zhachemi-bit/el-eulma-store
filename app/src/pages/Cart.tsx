@@ -99,20 +99,33 @@ export function Cart() {
 
                       {/* Quantity & Actions */}
                       <div className="flex items-center justify-between mt-4">
-                        <div className="flex items-center gap-3">
-                          <button
-                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                            className="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-100 transition-colors"
-                          >
-                            <Minus className="w-4 h-4" />
-                          </button>
-                          <span className="w-10 text-center font-medium">{item.quantity}</span>
-                          <button
-                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                            className="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-100 transition-colors"
-                          >
-                            <Plus className="w-4 h-4" />
-                          </button>
+                        <div className="flex flex-col gap-2">
+                          <div className="flex items-center gap-3">
+                            <button
+                              onClick={() => {
+                                if (item.quantity > (item.minOrderQuantity || 1)) {
+                                  updateQuantity(item.id, item.quantity - 1);
+                                } else {
+                                  toast.error(`Minimum order is ${item.minOrderQuantity} for this item`);
+                                }
+                              }}
+                              className="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-100 transition-colors"
+                            >
+                              <Minus className="w-4 h-4" />
+                            </button>
+                            <span className="w-10 text-center font-medium">{item.quantity}</span>
+                            <button
+                              onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                              className="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-100 transition-colors"
+                            >
+                              <Plus className="w-4 h-4" />
+                            </button>
+                          </div>
+                          {item.minOrderQuantity > 1 && (
+                            <p className="text-[10px] text-[#e67e22] font-medium">
+                              Min pieces: {item.minOrderQuantity}
+                            </p>
+                          )}
                         </div>
 
                         <button

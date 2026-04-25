@@ -66,6 +66,10 @@ export function Products() {
     fetchProducts();
   }, [selectedCategory, searchQuery, vendorId]);
 
+  const fireOffers = useMemo(() => {
+    return products.filter(p => p.originalPrice && p.originalPrice > p.price);
+  }, [products]);
+
   const filteredProducts = useMemo(() => {
     let result = [...products];
 
@@ -228,6 +232,40 @@ export function Products() {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
+
+        {/* Liquidations (Fire Offers) Section */}
+        {!loading && fireOffers.length > 0 && !selectedCategory && !searchQuery && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="mb-12 bg-gradient-to-r from-orange-600 to-red-600 rounded-3xl p-8 text-white relative overflow-hidden shadow-2xl"
+          >
+            {/* Background elements */}
+            <div className="absolute top-0 right-0 p-8 opacity-20 rotate-12">
+              <Search className="w-40 h-40" />
+            </div>
+            
+            <div className="relative z-10">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="bg-white/20 backdrop-blur-md p-2 rounded-xl animate-pulse">
+                  <SlidersHorizontal className="w-6 h-6 text-yellow-300" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-black uppercase tracking-tighter italic">Liquidations 🔥</h2>
+                  <p className="text-orange-100 text-sm opacity-80">Hot wholesale deals being cleared right now</p>
+                </div>
+              </div>
+
+              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {fireOffers.slice(0, 4).map((product, idx) => (
+                  <div key={product.id} className="bg-white rounded-2xl overflow-hidden shadow-xl transform transition-all hover:scale-105 duration-300">
+                    <ProductCard product={product} index={idx} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
 
         {/* Active Filters */}
         {activeFiltersCount > 0 && (

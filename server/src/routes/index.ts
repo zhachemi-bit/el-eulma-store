@@ -51,6 +51,27 @@ router.get('/stats', async (_req, res) => {
   }
 });
 
+router.get('/stats/categories', async (_req, res) => {
+  try {
+    const counts = await prisma.product.groupBy({
+      by: ['category'],
+      _count: {
+        _all: true
+      }
+    });
+
+    const categoriesWithCount = counts.reduce((acc, curr) => {
+      acc[curr.category] = curr._count._all;
+      return acc;
+    }, {} as Record<string, number>);
+
+    res.json(categoriesWithCount);
+  } catch (error) {
+    console.error('Category stats error:', error);
+    res.status(500).json({ error: 'Failed to fetch category stats' });
+  }
+});
+
 router.use('/users', userRoutes);
 router.use('/products', productRoutes);
 router.use('/vendors', vendorRoutes);

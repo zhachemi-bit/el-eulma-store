@@ -78,6 +78,7 @@ export function VendorDashboard() {
     stock: '',
     category: '',
     image: '',
+    minOrderQuantity: '1',
   });
 
   const filteredProducts = useMemo(() => {
@@ -109,6 +110,7 @@ export function VendorDashboard() {
       stock: '',
       category: '',
       image: '',
+      minOrderQuantity: '1',
     });
     setIsProductDialogOpen(true);
   };
@@ -126,6 +128,7 @@ export function VendorDashboard() {
       stock: product.stock.toString(),
       category: product.category,
       image: product.image,
+      minOrderQuantity: product.minOrderQuantity.toString(),
     });
     setIsProductDialogOpen(true);
   };
@@ -168,6 +171,7 @@ export function VendorDashboard() {
       stock: parseInt(productForm.stock),
       category: productForm.category,
       subcategory: productForm.category,
+      minOrderQuantity: parseInt(productForm.minOrderQuantity || '1'),
       images: [productForm.image || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&auto=format&fit=crop&q=60'],
     };
 
@@ -767,6 +771,24 @@ export function VendorDashboard() {
                   </SelectContent>
                 </Select>
               </div>
+            </div>
+
+            <div className="grid gap-2">
+              <Label>Minimum Wholesale Quantity *</Label>
+              <div className="relative">
+                <Input
+                  type="number"
+                  value={productForm.minOrderQuantity}
+                  onChange={(e) => setProductForm({ ...productForm, minOrderQuantity: e.target.value })}
+                  placeholder="10"
+                  min="1"
+                  className="h-11 pr-12"
+                />
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 font-medium">
+                  PCS
+                </div>
+              </div>
+              <p className="text-[10px] text-gray-500 italic">Minimum items per order for this wholesale product.</p>
             </div>
             <div className="grid gap-2">
               <Label>Product Image *</Label>
