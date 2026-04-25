@@ -22,9 +22,10 @@ export function Favorites() {
       id: product.id,
       name: product.name,
       price: product.price,
-      quantity: 1,
+      quantity: product.minOrderQuantity || 1,
       image: product.image,
       vendorName: product.vendor?.name || 'Vendor',
+      minOrderQuantity: product.minOrderQuantity || 1,
     });
     toast.success(`${product.name} added to cart!`, {
       action: {

@@ -105,6 +105,7 @@ export const products: Product[] = [
       'HDR': 'Yes, HDR10+',
       'HDMI Ports': '3'
     },
+    minOrderQuantity: 1,
     createdAt: new Date('2023-10-01'),
     updatedAt: new Date('2023-10-01'),
   },
@@ -129,6 +130,7 @@ export const products: Product[] = [
       'Doors': 'French Door',
       'Color': 'Stainless Steel'
     },
+    minOrderQuantity: 1,
     createdAt: new Date('2023-10-05'),
     updatedAt: new Date('2023-10-05'),
   },
@@ -153,6 +155,7 @@ export const products: Product[] = [
       'Camera': '48MP Main',
       'Color': 'Natural Titanium'
     },
+    minOrderQuantity: 1,
     createdAt: new Date('2023-10-10'),
     updatedAt: new Date('2023-10-10'),
   },
@@ -177,6 +180,7 @@ export const products: Product[] = [
       'Technology': 'EcoBubble',
       'Color': 'Silver'
     },
+    minOrderQuantity: 1,
     createdAt: new Date('2023-10-12'),
     updatedAt: new Date('2023-10-12'),
   },
@@ -201,6 +205,7 @@ export const products: Product[] = [
       'App Control': 'Yes, Mi Home',
       'Color': 'White'
     },
+    minOrderQuantity: 1,
     createdAt: new Date('2023-10-15'),
     updatedAt: new Date('2023-10-15'),
   },
@@ -225,6 +230,7 @@ export const products: Product[] = [
       'Display': 'Digital Touch',
       'Color': 'Black'
     },
+    minOrderQuantity: 1,
     createdAt: new Date('2023-10-18'),
     updatedAt: new Date('2023-10-18'),
   },
@@ -249,6 +255,7 @@ export const products: Product[] = [
       'Features': 'Turbo Cool, Sleep Mode',
       'Color': 'White'
     },
+    minOrderQuantity: 1,
     createdAt: new Date('2023-10-20'),
     updatedAt: new Date('2023-10-20'),
   },
@@ -273,6 +280,7 @@ export const products: Product[] = [
       'Programs': 'Auto Cook',
       'Color': 'Black'
     },
+    minOrderQuantity: 1,
     createdAt: new Date('2023-10-22'),
     updatedAt: new Date('2023-10-22'),
   }
