@@ -46,5 +46,6 @@ export const setupSwagger = (app: Express) => {
     res.send(swaggerSpec);
   });
 
-  console.log('📖 Swagger docs available at http://localhost:5000/api-docs');
+  const PORT = process.env['PORT'] || 5000;
+  console.log(`📖 Swagger docs available at http://localhost:${PORT}/api-docs`);
 };
