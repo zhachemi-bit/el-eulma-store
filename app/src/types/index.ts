@@ -97,6 +97,7 @@ export interface Testimonial {
   location: string;
   quote: string;
   rating: number;
+  isPinned: boolean;
   avatar?: string;
   userId?: string;
   createdAt?: Date;
