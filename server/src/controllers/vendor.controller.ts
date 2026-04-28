@@ -228,3 +228,89 @@ export const getVendorStats = async (req: AuthRequest, res: Response) => {
     return res.status(500).json({ error: 'Failed to fetch stats.' });
   }
 };
+
+/**
+ * @swagger
+ * /vendors/apply:
+ *   post:
+ *     summary: Submit a vendor application
+ *     tags: [Vendors]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [businessName, ownerName, email, phone, wilaya, city, address, registrationNumber]
+ *             properties:
+ *               businessName: { type: string }
+ *               ownerName: { type: string }
+ *               email: { type: string }
+ *               phone: { type: string }
+ *               wilaya: { type: string }
+ *               city: { type: string }
+ *               latitude: { type: number }
+ *               longitude: { type: number }
+ *               address: { type: string }
+ *               registrationNumber: { type: string }
+ *               description: { type: string }
+ *     responses:
+ *       201:
+ *         description: Application submitted
+ *       400:
+ *         description: Email already exists
+ */
+export const applyVendor = async (req: Request, res: Response) => {
+  try {
+    const {
+      businessName,
+      ownerName,
+      email,
+      phone,
+      wilaya,
+      city,
+      latitude,
+      longitude,
+      address,
+      registrationNumber,
+      description,
+    } = req.body;
+
+    // Check if vendor with this email already exists
+    const existingVendor = await prisma.vendor.findUnique({
+      where: { email },
+    });
+
+    if (existingVendor) {
+      return res.status(400).json({ error: 'An application with this email already exists.' });
+    }
+
+    const vendor = await prisma.vendor.create({
+      data: {
+        name: businessName,
+        email,
+        phone,
+        location: `${address}, ${city}`,
+        wilaya,
+        latitude,
+        longitude,
+        registrationNumber,
+        description: description ? `${description}\n\nOwner: ${ownerName}` : `Owner: ${ownerName}`,
+        status: 'pending',
+      },
+    });
+
+    return res.status(201).json({ 
+      message: 'Application submitted successfully', 
+      vendor: {
+        id: vendor.id,
+        name: vendor.name,
+        email: vendor.email,
+        status: vendor.status
+      }
+    });
+  } catch (error) {
+    console.error('ApplyVendor error:', error);
+    return res.status(500).json({ error: 'Failed to submit application.' });
+  }
+};
